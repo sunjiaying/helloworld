@@ -1,0 +1,43 @@
+# docker-compose up --scale web=3
+web:
+  image: sunjiaying/helloworld:latest
+  environment:
+    SERVICE_80_NAME: my-web-server
+    SERVICE_TAGS: backend-1
+    MY_HOST: host-1
+  ports:
+    - 80
+
+load_balancer:
+  image: sunjiaying/nginx-consul-template:latest
+  hostname: lb
+  environment:
+    - consul_server_ip=192.168.3.100
+  links:
+    - consul_server_master:consul    
+  ports:
+    - 80:80
+
+consul_server_master:
+  image: consul:latest
+  environment:
+    SERVICE_TAGS: consul servers
+  hostname: consul_server_master
+  ports:
+    - 8300:8300
+    - 8301:8301
+    - 8302:8302
+    - 8400:8400
+    - 8500:8500
+    - 8600:8600
+  command: consul agent -server -bootstrap-expect 1 -advertise 192.168.3.100 -node consul_server_master -data-dir /tmp/data-dir -client 0.0.0.0 -ui
+
+
+registrator:
+  image: gliderlabs/registrator:latest
+  hostname: registrator
+  links:
+    - consul_server_master:consul
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  command: -internal consul://consul:8500
