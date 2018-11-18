@@ -3,16 +3,18 @@ web:
   image: sunjiaying/helloworld:latest
   environment:
     SERVICE_80_NAME: my-web-server
+    # 如果是其它节点机器，可以将backend-1为改2 host-1改为2 以此类推
     SERVICE_TAGS: backend-1
-    MY_HOST: host-1
+    MY_HOST: host-1  
   ports:
     - 80
 
 load_balancer:
   image: sunjiaying/nginx-consul-template:latest
   hostname: lb
-  environment:
+  environment:    
     - consul_server_ip=192.168.3.100
+    # 上面是设置consul服务器的IP
   links:
     - consul_server_master:consul    
   ports:
@@ -31,7 +33,7 @@ consul_server_master:
     - 8500:8500
     - 8600:8600
   command: consul agent -server -bootstrap-expect 1 -advertise 192.168.3.100 -node consul_server_master -data-dir /tmp/data-dir -client 0.0.0.0 -ui
-
+  # 上面是设置consul服务器的IP
 
 registrator:
   image: gliderlabs/registrator:latest
@@ -41,3 +43,6 @@ registrator:
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
   command: -internal consul://consul:8500
+  # 如何需要跨多台主机进行
+  # command: -ip=192.168.3.100 consul://192.168.3.100:8500
+  
