@@ -1,0 +1,12 @@
+version: "3"
+services:
+
+  helloworld:
+    image: alpine
+    container_name: helloworld
+    ports:
+      - 80:80
+    volumes:
+      - .:/helloworld
+    command:
+      - /helloworld/helloworld
