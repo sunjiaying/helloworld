@@ -29,9 +29,3 @@ docker-compose up
 
 然后通过pip install docker-compose来安装docker-compose
 
-
-
-添加了一点sh测试.
-
-1123213
-99999999

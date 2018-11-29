@@ -7,5 +7,7 @@ git clone https://github.com/sunjiaying/helloworld.git github.com/sunjiaying/hel
 cd /go/src/github.com/sunjiaying/helloworld/
 go build
 
+./helloworld
+
 # curl https://raw.githubusercontent.com/sunjiaying/helloworld/master/deploy.sh | bash
 
